@@ -7,7 +7,6 @@ import json from 'rollup-plugin-json';
 import filesize from "rollup-plugin-filesize";
 import includePaths from "rollup-plugin-includepaths";
 import analyze from "rollup-plugin-analyzer";
-import dts from "rollup-plugin-dts";
 
 import pkg from './package.json';
 import {DEFAULT_EXTENSIONS} from "@babel/core";
@@ -23,7 +22,7 @@ const getConfig = (isProd) => {
         external: [
             "core-js",
             "@babel/runtime-corejs3",
-            "qiniu-js",
+            "ali-oss",
             "fengwuxp-typescript-feign",
             "fengwuxp-common-utils",
             "fengwuxp-common-utils/lib/uuid/UUIDUtil",
@@ -89,13 +88,5 @@ const getConfig = (isProd) => {
 export default [
     getConfig(false),
     getConfig(true),
-    {
-        input: "./types-temp/index.d.ts",
-        output: {
-            file: "./types/index.d.ts",
-            format: "es"
-        },
-        plugins: [dts()],
-    },
 ]
 

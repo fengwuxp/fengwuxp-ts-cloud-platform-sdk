@@ -1,6 +1,6 @@
 import {QiNiuYunOssClientOptionalOptions, QiNiuYunOssUploadConfigurationFactory} from "./factory/QiNiuYunOssFactory";
 import {FeignConfigurationRegistry} from "fengwuxp-typescript-feign";
-
+export {QiNiuYunOssClientOptionalOptions,QiNiuYunOssUploadConfigurationFactory} from "./factory/QiNiuYunOssFactory";
 
 const restTemplate = FeignConfigurationRegistry.getDefaultFeignConfiguration().getRestTemplate();
 
@@ -18,6 +18,7 @@ function getOssServerConfiguration(url: string | Function) {
 }
 
 export type GetConfigurationHandle = () => Promise<QiNiuYunOssClientOptionalOptions>
+
 
 export default class DefaultQiNiuYunOssUploadConfigurationFactory implements QiNiuYunOssUploadConfigurationFactory {
 
