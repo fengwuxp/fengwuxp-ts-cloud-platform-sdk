@@ -1,7 +1,13 @@
-import {MultipartUploadObservable, MultipartUploadResult, OssClientInterface} from "fengwuxp-oss-abstract";
+import {
+    MultipartUploadObservable,
+    MultipartUploadResult,
+    OssClientInterface,
+    FileNameGenerator,
+    SimpleFileNameGenerator
+} from "fengwuxp-oss-abstract";
 import {QiNiuOssUploadConfig, QiNiuOssUploadExtraOptions, upload} from "qiniu-js";
 import {ConfigurationProvider, QiNiuYunOssClientConfiguration} from "./configuration/ConfigurationProvider";
-
+import StringUtils from "fengwuxp-common-utils/lib/string/StringUtils";
 
 const defaultResultParser = (result: any, config: QiNiuYunOssClientConfiguration) => {
 
@@ -13,24 +19,39 @@ export default class QiNiuOssClient implements OssClientInterface {
 
     private configurationProvider: ConfigurationProvider;
 
+    protected fileNameGenerator: FileNameGenerator;
+
     private parseResult: (result: string, config) => string;
 
 
     constructor(configurationProvider: ConfigurationProvider,
+                fileNameGenerator: FileNameGenerator = new SimpleFileNameGenerator(),
                 parseResult: (result: string, config: QiNiuYunOssClientConfiguration) => string = defaultResultParser) {
         this.configurationProvider = configurationProvider;
+        this.fileNameGenerator = fileNameGenerator;
         this.parseResult = defaultResultParser
     }
 
-    multipartUpload = (file: (File | Blob), name?: string, putExtra?: QiNiuOssUploadExtraOptions, config?: QiNiuOssUploadConfig): MultipartUploadObservable<MultipartUploadResult> => {
+    multipartUpload = (file: File, name?: string, putExtra?: QiNiuOssUploadExtraOptions, config?: QiNiuOssUploadConfig): MultipartUploadObservable<MultipartUploadResult> => {
 
-        const configurationProvider = this.configurationProvider;
+        const {configurationProvider, fileNameGenerator, parseResult} = this;
 
         return new MultipartUploadObservable<MultipartUploadResult>((process) => {
             return configurationProvider.get().then((configuration) => {
                 const token = configuration.token;
                 return new Promise((resolve, reject) => {
-                    upload(file, name, token, putExtra, {
+                    const filename = file.name;
+                    if (!StringUtils.hasText(name)) {
+                        name = fileNameGenerator.gen(filename)
+                    }
+                    console.log("========>",{
+                        ...configuration,
+                        ...config
+                    })
+                    upload(file, name, token, {
+                        fname: filename,
+                        ...putExtra
+                    }, {
                         ...configuration,
                         ...config
                     }).subscribe((value) => {
@@ -39,7 +60,7 @@ export default class QiNiuOssClient implements OssClientInterface {
                     }, reject, resolve)
                 }).then((result: any) => {
                     return {
-                        url: this.parseResult(result, configuration),
+                        url: parseResult(result, configuration),
                         originalResult: result
                     }
                 })

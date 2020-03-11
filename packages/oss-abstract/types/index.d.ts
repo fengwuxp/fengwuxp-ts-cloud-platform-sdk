@@ -26,4 +26,13 @@ interface MultipartUploadResult<T = any> {
     originalResult: T;
 }
 
-export { MultipartUploadObservable, MultipartUploadResult, ObservableProcessFunction, OssClientInterface };
+interface FileNameGenerator {
+    gen: (filename: string, extName?: string) => string;
+}
+declare class SimpleFileNameGenerator implements FileNameGenerator {
+    private prefix;
+    constructor(prefix?: string);
+    gen: (filename: string, extName?: string) => string;
+}
+
+export { FileNameGenerator, MultipartUploadObservable, MultipartUploadResult, ObservableProcessFunction, OssClientInterface, SimpleFileNameGenerator };

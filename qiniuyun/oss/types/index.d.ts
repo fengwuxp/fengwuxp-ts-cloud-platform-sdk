@@ -1,5 +1,5 @@
 import { QiNiuOssUploadConfig, QiNiuOssUploadExtraOptions } from 'qiniu-js';
-import { OssClientInterface, MultipartUploadObservable, MultipartUploadResult } from 'fengwuxp-oss-abstract';
+import { OssClientInterface, FileNameGenerator, MultipartUploadObservable, MultipartUploadResult } from 'fengwuxp-oss-abstract';
 
 declare type QiNiuYunOssClientConfiguration = Pick<QiNiuOssUploadConfig, keyof QiNiuOssUploadConfig> & {
     token: string;
@@ -19,9 +19,10 @@ declare class DefaultConfigurationProvider implements ConfigurationProvider {
 
 declare class QiNiuOssClient implements OssClientInterface {
     private configurationProvider;
+    protected fileNameGenerator: FileNameGenerator;
     private parseResult;
-    constructor(configurationProvider: ConfigurationProvider, parseResult?: (result: string, config: QiNiuYunOssClientConfiguration) => string);
-    multipartUpload: (file: Blob | File, name?: string, putExtra?: QiNiuOssUploadExtraOptions, config?: QiNiuOssUploadConfig) => MultipartUploadObservable<MultipartUploadResult<any>>;
+    constructor(configurationProvider: ConfigurationProvider, fileNameGenerator?: FileNameGenerator, parseResult?: (result: string, config: QiNiuYunOssClientConfiguration) => string);
+    multipartUpload: (file: File, name?: string, putExtra?: QiNiuOssUploadExtraOptions, config?: QiNiuOssUploadConfig) => MultipartUploadObservable<MultipartUploadResult<any>>;
 }
 
 export { ConfigurationProvider, DefaultConfigurationProvider, GetConfigurationHandle, QiNiuOssClient, QiNiuYunOssClientConfiguration };
