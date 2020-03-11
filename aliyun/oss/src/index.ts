@@ -81,9 +81,7 @@ export const genUploadOssKey = (filename: string, extName?: string) => {
     //前缀/年份/月份日期/filename.xxx
 
     const date = new Date();
-
     const days = date.getDate();
-
     if (!StringUtils.hasText(extName)) {
         extName = filename.substring(filename.lastIndexOf(".") + 1, filename.length);
     }

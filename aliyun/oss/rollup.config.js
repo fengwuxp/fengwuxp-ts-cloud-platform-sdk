@@ -7,7 +7,7 @@ import json from 'rollup-plugin-json';
 import filesize from "rollup-plugin-filesize";
 import includePaths from "rollup-plugin-includepaths";
 import analyze from "rollup-plugin-analyzer";
-
+import dts from "rollup-plugin-dts";
 import pkg from './package.json';
 import {DEFAULT_EXTENSIONS} from "@babel/core";
 

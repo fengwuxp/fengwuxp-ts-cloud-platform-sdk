@@ -1,22 +1,27 @@
-import { QiNiuOssUploadConfig } from 'qiniu-js';
+import { QiNiuOssUploadConfig, QiNiuOssUploadExtraOptions } from 'qiniu-js';
+import { OssClientInterface, MultipartUploadObservable, MultipartUploadResult } from 'fengwuxp-oss-abstract';
 
-declare type QiNiuYunOssClientOptionalOptions = Pick<QiNiuOssUploadConfig, keyof QiNiuOssUploadConfig> & {
+declare type QiNiuYunOssClientConfiguration = Pick<QiNiuOssUploadConfig, keyof QiNiuOssUploadConfig> & {
     token: string;
+    domain: string;
 };
-/**
- * 获取七牛云 oss配置
- */
-interface QiNiuYunOssUploadConfigurationFactory {
-    factory: () => Promise<QiNiuYunOssClientOptionalOptions>;
+declare type GetConfigurationHandle = () => Promise<QiNiuYunOssClientConfiguration>;
+interface ConfigurationProvider {
+    get: () => Promise<QiNiuYunOssClientConfiguration>;
 }
 
-declare type GetConfigurationHandle = () => Promise<QiNiuYunOssClientOptionalOptions>;
-declare class DefaultQiNiuYunOssUploadConfigurationFactory implements QiNiuYunOssUploadConfigurationFactory {
+declare class DefaultConfigurationProvider implements ConfigurationProvider {
     private getConfigUrl;
     private config;
     constructor(getConfigUrl: string | GetConfigurationHandle);
-    factory: () => Promise<QiNiuYunOssClientOptionalOptions>;
+    get: () => Promise<QiNiuYunOssClientConfiguration>;
 }
 
-export default DefaultQiNiuYunOssUploadConfigurationFactory;
-export { GetConfigurationHandle };
+declare class QiNiuOssClient implements OssClientInterface {
+    private configurationProvider;
+    private parseResult;
+    constructor(configurationProvider: ConfigurationProvider, parseResult?: (result: string, config: QiNiuYunOssClientConfiguration) => string);
+    multipartUpload: (file: Blob | File, name?: string, putExtra?: QiNiuOssUploadExtraOptions, config?: QiNiuOssUploadConfig) => MultipartUploadObservable<MultipartUploadResult<any>>;
+}
+
+export { ConfigurationProvider, DefaultConfigurationProvider, GetConfigurationHandle, QiNiuOssClient, QiNiuYunOssClientConfiguration };

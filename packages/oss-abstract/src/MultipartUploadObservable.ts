@@ -1,4 +1,4 @@
-export type ObservableProcessFunction = (percentage: number,) => Promise<void> | void;
+export type ObservableProcessFunction = (percentage: number, ...originalResult: any[]) => Promise<void> | void;
 
 /**
  * 上传的观察者

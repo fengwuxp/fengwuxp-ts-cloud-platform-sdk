@@ -1,5 +1,5 @@
 {
-  "name": "fengwuxp-aliyun-oss",
+  "name": "fengwuxp-oss-abstract",
   "version": "1.0.0",
   "description": "aliyun oss sdk simple use",
   "publishConfig": {

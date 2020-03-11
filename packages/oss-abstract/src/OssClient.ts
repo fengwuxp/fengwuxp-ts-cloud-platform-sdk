@@ -13,7 +13,7 @@ export interface OssClientInterface {
      * @param name
      * @param options
      */
-    multipartUpload: <O>(file: File | Blob, name?: string, options?: O) => MultipartUploadObservable<MultipartUploadResult>
+    multipartUpload: (file: File | Blob, name?: string, ...options: any[]) => MultipartUploadObservable<MultipartUploadResult>
 
 }
 
