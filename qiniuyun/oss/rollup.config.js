@@ -24,6 +24,7 @@ const getConfig = (isProd) => {
             "core-js",
             "@babel/runtime-corejs3",
             "qiniu-js",
+            "fengwuxp-oss-abstract",
             "fengwuxp-typescript-feign",
             "fengwuxp-common-utils",
             "fengwuxp-common-utils/lib/uuid/UUIDUtil",

@@ -11,7 +11,11 @@ import StringUtils from "fengwuxp-common-utils/lib/string/StringUtils";
 
 const defaultResultParser = (result: any, config: QiNiuYunOssClientConfiguration) => {
 
-    return `${config.domain}${result.saveKey}`
+    let domain = config.domain;
+    if (!domain.endsWith("/")) {
+        domain = `${domain}/`;
+    }
+    return `${domain}${result.key}`;
 };
 
 export default class QiNiuOssClient implements OssClientInterface {
@@ -44,7 +48,7 @@ export default class QiNiuOssClient implements OssClientInterface {
                     if (!StringUtils.hasText(name)) {
                         name = fileNameGenerator.gen(filename)
                     }
-                    console.log("========>",{
+                    console.log("========>", {
                         ...configuration,
                         ...config
                     })
