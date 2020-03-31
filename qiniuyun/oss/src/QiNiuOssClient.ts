@@ -48,10 +48,6 @@ export default class QiNiuOssClient implements OssClientInterface {
                     if (!StringUtils.hasText(name)) {
                         name = fileNameGenerator.gen(filename)
                     }
-                    console.log("========>", {
-                        ...configuration,
-                        ...config
-                    })
                     upload(file, name, token, {
                         fname: filename,
                         ...putExtra

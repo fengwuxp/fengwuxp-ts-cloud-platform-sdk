@@ -13,7 +13,8 @@ interface ConfigurationProvider {
 declare class DefaultConfigurationProvider implements ConfigurationProvider {
     private getConfigUrl;
     private config;
-    constructor(getConfigUrl: string | GetConfigurationHandle);
+    private useCache;
+    constructor(getConfigUrl: string | GetConfigurationHandle, useCache?: boolean);
     get: () => Promise<QiNiuYunOssClientConfiguration>;
 }
 

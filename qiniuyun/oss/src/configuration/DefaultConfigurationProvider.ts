@@ -24,9 +24,12 @@ export default class DefaultConfigurationProvider implements ConfigurationProvid
 
     private config: QiNiuYunOssClientConfiguration;
 
+    private useCache: boolean;
 
-    constructor(getConfigUrl: string | GetConfigurationHandle) {
+
+    constructor(getConfigUrl: string | GetConfigurationHandle, useCache: boolean = false) {
         this.getConfigUrl = getConfigUrl;
+        this.useCache = useCache;
     }
 
     get = (): Promise<QiNiuYunOssClientConfiguration> => {
@@ -34,7 +37,9 @@ export default class DefaultConfigurationProvider implements ConfigurationProvid
         if (this.config == null) {
             const {getConfigUrl} = this;
             return getOssServerConfiguration(getConfigUrl).then((config) => {
-                this.config = config;
+                if (this.useCache) {
+                    this.config = config;
+                }
                 return config;
             });
         } else {
