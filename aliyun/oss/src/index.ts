@@ -8,15 +8,15 @@ import StringUtils from "fengwuxp-common-utils/lib/string/StringUtils";
 import UUIDUtil from "fengwuxp-common-utils/lib/uuid/UUIDUtil";
 
 
-type GetConfigFunction = () => Promise<any>;
+type GetConfigFunction<T> = () => Promise<T>;
 
 export interface OakALiYunOssInitializerOptions extends OssClientOptionalOptions {
 
     //获取配置的url或方法
-    getConfigUrl: GetConfigFunction | string;
+    getConfigUrl: GetConfigFunction<OssServerConfig> | string;
 
     //获取配置的url或方法
-    getStsTokenUrl?: GetConfigFunction | string;
+    getStsTokenUrl?: GetConfigFunction<AliYunStsTokenInfo> | string;
 }
 
 
@@ -215,12 +215,13 @@ class DefaultSTSALiYunOssFactory implements ALiYunOssFactory {
     private aliYunStsTokenInfo: AliYunStsTokenInfo;
 
     //刷新sts token url
-    private getStsTokenUrl: GetConfigFunction | string;
+    private getStsTokenUrl: GetConfigFunction<AliYunStsTokenInfo>  | string;
 
     constructor(ossClientOptions: OssClientOptions,
-                aliYunStsTokenInfo: GetConfigFunction | string | AliYunStsTokenInfo) {
+                aliYunStsTokenInfo: GetConfigFunction<AliYunStsTokenInfo>  | string | AliYunStsTokenInfo) {
         this.ossClientOptions = ossClientOptions;
         if (typeof aliYunStsTokenInfo === "object") {
+            this.resetExpiration(aliYunStsTokenInfo);
             this.aliYunStsTokenInfo = aliYunStsTokenInfo;
         } else {
             this.getStsTokenUrl = aliYunStsTokenInfo;
@@ -257,11 +258,15 @@ class DefaultSTSALiYunOssFactory implements ALiYunOssFactory {
                     accessKeyId: aliYunStsTokenInfo.accessKeyId,
                     accessKeySecret: aliYunStsTokenInfo.accessKeySecret,
                 };
+                this.resetExpiration(aliYunStsTokenInfo);
                 this.aliYunStsTokenInfo = aliYunStsTokenInfo;
             }).catch((e) => {
                 console.error(`刷新token失败：${e}`);
                 return Promise.reject(e);
             });
+    }
+    private resetExpiration = (aliYunStsTokenInfo) => {
+        aliYunStsTokenInfo.expirationTime = new Date().getTime() + aliYunStsTokenInfo.expirationSeconds * 1000;
     }
 }
 
