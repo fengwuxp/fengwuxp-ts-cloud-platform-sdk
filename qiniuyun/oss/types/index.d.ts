@@ -23,7 +23,7 @@ declare class QiNiuOssClient implements OssClientInterface {
     protected fileNameGenerator: FileNameGenerator;
     private parseResult;
     constructor(configurationProvider: ConfigurationProvider, fileNameGenerator?: FileNameGenerator, parseResult?: (result: string, config: QiNiuYunOssClientConfiguration) => string);
-    multipartUpload: (file: File, name?: string, putExtra?: QiNiuOssUploadExtraOptions, config?: QiNiuOssUploadConfig) => MultipartUploadObservable<MultipartUploadResult<any>>;
+    multipartUpload: (file: File, name?: string, putExtra?: QiNiuOssUploadExtraOptions, config?: QiNiuOssUploadConfig) => MultipartUploadObservable<MultipartUploadResult>;
 }
 
 export { ConfigurationProvider, DefaultConfigurationProvider, GetConfigurationHandle, QiNiuOssClient, QiNiuYunOssClientConfiguration };
